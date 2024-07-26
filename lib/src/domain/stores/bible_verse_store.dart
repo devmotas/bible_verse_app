@@ -1,4 +1,4 @@
-import 'package:daily_messages/src/domain/Exceptions/exceptions.dart';
+import 'package:daily_messages/src/domain/exceptions/exceptions.dart';
 import 'package:daily_messages/src/domain/models/bible_verse_model.dart';
 import 'package:daily_messages/src/domain/repositories/bible_verse_repository.dart';
 import 'package:flutter/material.dart';

@@ -41,6 +41,16 @@ class BibleVerseModel {
 
   factory BibleVerseModel.fromJson(String source) =>
       BibleVerseModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  static List<Map<String, dynamic>> listToJson(List<BibleVerseModel> verses) {
+    return verses.map((verse) => verse.toMap()).toList();
+  }
+
+  static List<BibleVerseModel> listFromJson(List<dynamic> json) {
+    return json
+        .map((item) => BibleVerseModel.fromMap(item as Map<String, dynamic>))
+        .toList();
+  }
 }
 
 class BookModel {
