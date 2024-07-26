@@ -4,6 +4,7 @@ import 'package:daily_messages/src/domain/repositories/bible_verse_repository.da
 import 'package:daily_messages/src/domain/stores/bible_verse_store.dart';
 import 'package:daily_messages/src/ui/widgets/bible_verse_card.dart';
 import 'package:daily_messages/src/ui/widgets/custom_snack_bar.dart';
+import 'package:daily_messages/src/ui/widgets/modal_verse_details.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -72,6 +73,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void openModalVerseDetails(
+      BuildContext context, BibleVerseModel bibleVerseModel) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return ModalVerseDetails(bibleVerseModel: bibleVerseModel);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData myTheme = Theme.of(context);
@@ -92,7 +102,12 @@ class _HomeScreenState extends State<HomeScreen> {
               controller: _scrollController,
               itemCount: _bibleVerseModels.length,
               itemBuilder: (BuildContext context, int index) {
-                return BibleVerseCard(_bibleVerseModels[index]);
+                return InkWell(
+                  onTap: () {
+                    openModalVerseDetails(context, _bibleVerseModels[index]);
+                  },
+                  child: BibleVerseCard(_bibleVerseModels[index]),
+                );
               },
             ),
     );

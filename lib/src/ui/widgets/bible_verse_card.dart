@@ -12,7 +12,7 @@ class BibleVerseCard extends StatelessWidget {
       child: ListTile(
         leading: const Icon(Icons.book),
         title: Text(
-            '${verse.book.name} - ${verse.book.author} (${verse.chapter}:${verse.number})'),
+            '${verse.book.author == 'Desconhecido' ? verse.book.name : verse.book.author} - ${verse.chapter}:${verse.number}'),
         subtitle: Text(verse.text),
         isThreeLine: true,
       ),
