@@ -17,7 +17,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final VerseService _verseService = VerseService();
 
   @override
-  @override
   void initState() {
     super.initState();
     _fetchInitialData();
@@ -34,14 +33,20 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _fetchInitialData() async {
     final bibleVerseModels = await _verseService.getVersesData(context);
     setState(() {
-      _bibleVerseModels.addAll(bibleVerseModels);
+      _bibleVerseModels.addAll(bibleVerseModels.where((verse) =>
+          !_bibleVerseModels.any((existingVerse) =>
+              existingVerse.chapter == verse.chapter &&
+              existingVerse.number == verse.number)));
     });
   }
 
   Future<void> _fetchMoreData() async {
     final bibleVerseModels = await _verseService.getMoreVersesData(context);
     setState(() {
-      _bibleVerseModels.addAll(bibleVerseModels);
+      _bibleVerseModels.addAll(bibleVerseModels.where((verse) =>
+          !_bibleVerseModels.any((existingVerse) =>
+              existingVerse.chapter == verse.chapter &&
+              existingVerse.number == verse.number)));
     });
   }
 
@@ -70,17 +75,31 @@ class _HomeScreenState extends State<HomeScreen> {
               child: CircularProgressIndicator(
               color: Colors.white,
             ))
-          : ListView.builder(
-              controller: _scrollController,
-              itemCount: _bibleVerseModels.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    openModalVerseDetails(context, _bibleVerseModels[index]);
+          : Stack(
+              children: [
+                ListView.builder(
+                  controller: _scrollController,
+                  itemCount: _bibleVerseModels.length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == _bibleVerseModels.length) {
+                      return _bibleVerseModels.length < 100
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : const SizedBox.shrink();
+                    }
+                    return InkWell(
+                      onTap: () {
+                        openModalVerseDetails(
+                            context, _bibleVerseModels[index]);
+                      },
+                      child: BibleVerseCard(_bibleVerseModels[index]),
+                    );
                   },
-                  child: BibleVerseCard(_bibleVerseModels[index]),
-                );
-              },
+                ),
+              ],
             ),
     );
   }

@@ -10,7 +10,7 @@ import 'package:daily_messages/src/domain/models/bible_verse_model.dart';
 import 'package:flutter/material.dart';
 
 abstract class IBibleVerseRepository {
-  Future<BibleVerseModel> getVerses(dynamic body, BuildContext context);
+  Future<List<BibleVerseModel>> getVerses(BuildContext context);
 }
 
 class BibleVerseRepository implements IBibleVerseRepository {
@@ -19,17 +19,17 @@ class BibleVerseRepository implements IBibleVerseRepository {
   BibleVerseRepository({required this.client});
 
   @override
-  Future<BibleVerseModel> getVerses(dynamic body, BuildContext context) async {
+  Future<List<BibleVerseModel>> getVerses(BuildContext context) async {
     Map<String, String> headers = {'bearer': AppKeys.BIBLE_API_KEY};
 
     final response = await client.get(
       url: ApiUrl.BIBLE_VERSES,
-      headers: {},
+      headers: headers,
     );
 
     if (response.statusCode.toString().startsWith('20')) {
-      final body = jsonDecode(response.body);
-      return BibleVerseModel.fromMap(body);
+      final List<dynamic> body = jsonDecode(response.body);
+      return BibleVerseModel.listFromJson(body);
     } else if (response.statusCode.toString().startsWith('40')) {
       throw NotFoundException('Recurso não encontrado');
     } else {

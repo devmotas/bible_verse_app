@@ -17,13 +17,13 @@ class BibleVerseStore {
 
   Future<void> getMultipleVerses(int count, BuildContext context) async {
     isLoading.value = true;
-    final List<BibleVerseModel> allVerses = [];
+    final Set<BibleVerseModel> uniqueVerses = {};
     try {
       for (int i = 0; i < count; i++) {
-        final result = await repository.getVerses({}, context);
-        allVerses.add(result);
+        final result = await repository.getVerses(context);
+        uniqueVerses.addAll(result);
       }
-      state.value = allVerses.take(10).toList();
+      state.value = uniqueVerses.toList();
     } on NotFoundException catch (e) {
       erro.value = e.message;
     } catch (e) {
