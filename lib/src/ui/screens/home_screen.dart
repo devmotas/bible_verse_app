@@ -1,8 +1,11 @@
+import 'package:daily_messages/src/data/services/channels.dart';
 import 'package:daily_messages/src/domain/models/bible_verse_model.dart';
 import 'package:daily_messages/src/domain/services/verse_service.dart';
 import 'package:daily_messages/src/ui/widgets/bible_verse_card.dart';
+import 'package:daily_messages/src/ui/widgets/custom_snack_bar.dart';
 import 'package:daily_messages/src/ui/widgets/modal_verse_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,6 +33,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void sendDataToKotlin(BibleVerseModel data) async {
+    try {
+      var res = await Channels.qrCodeChannel
+          .invokeMethod('sendQrCode', data.toJson());
+      CustomSnackBar.show(
+        context,
+        'Versículo atualizado com sucesso',
+        success: true,
+      );
+    } on PlatformException catch (e) {
+      print("Failed to send data to Kotlin: '${e.message}'.");
+    }
+  }
+
   Future<void> _fetchInitialData() async {
     final bibleVerseModels = await _verseService.getVersesData(context);
     setState(() {
@@ -37,6 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
           !_bibleVerseModels.any((existingVerse) =>
               existingVerse.chapter == verse.chapter &&
               existingVerse.number == verse.number)));
+
+      sendDataToKotlin(bibleVerseModels.first);
     });
   }
 
@@ -50,13 +69,18 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void openModalVerseDetails(
-      BuildContext context, BibleVerseModel bibleVerseModel) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return ModalVerseDetails(bibleVerseModel: bibleVerseModel);
-        });
+  Future<void> openModalVerseDetails(
+      BuildContext context, BibleVerseModel bibleVerseModel) async {
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalVerseDetails(bibleVerseModel: bibleVerseModel);
+      },
+    );
+
+    if (result == true) {
+      sendDataToKotlin(bibleVerseModel);
+    }
   }
 
   @override

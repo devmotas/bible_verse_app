@@ -47,7 +47,7 @@ class ModalVerseDetails extends StatelessWidget {
                   const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
                 )),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(context, true);
             },
             child: const Text('Definir como versículo do dia'),
           ),
