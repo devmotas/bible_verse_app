@@ -12,14 +12,14 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class MainActivity : FlutterActivity() {
-    private val channelName = "qrcodechannel"
+    private val channelName = "versechannel"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         val channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channelName)
         channel.setMethodCallHandler { call, result ->
             when (call.method) {
-                "sendQrCode" -> {
+                "sendNewVerse" -> {
                     val dataJsonString = call.arguments as? String
                     if (dataJsonString != null) {
                         val dataType = object : TypeToken<HashMap<String, Any>>() {}.type

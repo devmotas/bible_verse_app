@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:daily_messages/src/data/services/channels.dart';
 import 'package:daily_messages/src/domain/models/bible_verse_model.dart';
 import 'package:daily_messages/src/domain/services/verse_service.dart';
@@ -23,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _fetchInitialData();
+    initPlatformState();
 
     _scrollController.addListener(() async {
       if (_scrollController.position.pixels + 200 >=
@@ -33,10 +36,19 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void initPlatformState() {
+    Channels.versechannel.setMethodCallHandler((call) async {
+      print('chamou ' + call.method);
+      if (call.method == 'refreshData') {
+        _fetchInitialData();
+      }
+    });
+  }
+
   void sendDataToKotlin(BibleVerseModel data) async {
     try {
-      var res = await Channels.qrCodeChannel
-          .invokeMethod('sendQrCode', data.toJson());
+      var res = await Channels.versechannel
+          .invokeMethod('sendNewVerse', data.toJson());
       CustomSnackBar.show(
         context,
         'Versículo atualizado com sucesso',
@@ -55,7 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
               existingVerse.chapter == verse.chapter &&
               existingVerse.number == verse.number)));
 
-      sendDataToKotlin(bibleVerseModels.first);
+      if (bibleVerseModels.isNotEmpty) {
+        final randomIndex = Random().nextInt(bibleVerseModels.length);
+        sendDataToKotlin(bibleVerseModels[randomIndex]);
+      }
     });
   }
 
