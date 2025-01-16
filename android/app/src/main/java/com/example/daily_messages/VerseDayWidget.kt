@@ -33,12 +33,14 @@ class VerseDayWidget : AppWidgetProvider() {
         if (data != null) {
             val dataType = object : TypeToken<HashMap<String, Any>>() {}.type
             val dataMap: HashMap<String, Any> = Gson().fromJson(data, dataType)
-                      if (data.isNotEmpty()) {
+
+            if (data.isNotEmpty()) {
                 updateWidget(context, dataMap)
             } else {
                 updateWidgetWithMessage(context)
             }
         }
+
     }
 
     private fun updateWidget(context: Context?, data: Map<String, Any>) {
