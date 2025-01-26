@@ -1,5 +1,5 @@
-import 'package:daily_messages/src/domain/models/bible_verse_model.dart';
 import 'package:flutter/material.dart';
+import 'package:new_bible_verse/src/domain/models/bible_verse_model.dart';
 
 class ModalVerseDetails extends StatelessWidget {
   final BibleVerseModel bibleVerseModel;

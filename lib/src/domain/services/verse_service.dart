@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:daily_messages/src/domain/http/http_client.dart';
-import 'package:daily_messages/src/domain/models/bible_verse_model.dart';
-import 'package:daily_messages/src/domain/repositories/bible_verse_repository.dart';
-import 'package:daily_messages/src/domain/services/check_internet_connection_service.dart';
-import 'package:daily_messages/src/domain/services/shared_preferences_service.dart';
-import 'package:daily_messages/src/domain/stores/bible_verse_store.dart';
-import 'package:daily_messages/src/ui/widgets/custom_snack_bar.dart';
+import 'package:new_bible_verse/src/domain/http/http_client.dart';
+import 'package:new_bible_verse/src/domain/models/bible_verse_model.dart';
+import 'package:new_bible_verse/src/domain/repositories/bible_verse_repository.dart';
+import 'package:new_bible_verse/src/domain/services/check_internet_connection_service.dart';
+import 'package:new_bible_verse/src/domain/services/shared_preferences_service.dart';
+import 'package:new_bible_verse/src/domain/stores/bible_verse_store.dart';
+import 'package:new_bible_verse/src/ui/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

@@ -2,11 +2,11 @@
 
 import 'dart:convert';
 
-import 'package:daily_messages/src/domain/apis/api_url.dart';
-import 'package:daily_messages/src/domain/exceptions/exceptions.dart';
-import 'package:daily_messages/src/domain/http/http_client.dart';
-import 'package:daily_messages/src/domain/keys/app_keys.dart';
-import 'package:daily_messages/src/domain/models/bible_verse_model.dart';
+import 'package:new_bible_verse/src/domain/apis/api_url.dart';
+import 'package:new_bible_verse/src/domain/exceptions/exceptions.dart';
+import 'package:new_bible_verse/src/domain/http/http_client.dart';
+import 'package:new_bible_verse/src/domain/keys/app_keys.dart';
+import 'package:new_bible_verse/src/domain/models/bible_verse_model.dart';
 import 'package:flutter/material.dart';
 
 abstract class IBibleVerseRepository {
