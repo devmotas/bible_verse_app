@@ -54,10 +54,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _updateCurrentVerse() {
-    if (bibleVerseModels.value.isNotEmpty) {
-      currentVerse.value = bibleVerseModels
+    if (bibleVerseModels.value.isEmpty) return;
+
+    BibleVerseModel? newCurrentVerse;
+    do {
+      newCurrentVerse = bibleVerseModels
           .value[Random().nextInt(bibleVerseModels.value.length)];
-    }
+    } while (newCurrentVerse == currentVerse.value &&
+        bibleVerseModels.value.length > 1);
+
+    currentVerse.value = newCurrentVerse;
   }
 
   Future<void> _fetchMoreData() async {
