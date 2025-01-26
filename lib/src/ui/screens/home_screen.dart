@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void initPlatformState() {
     Channels.versechannel.setMethodCallHandler((call) async {
-      print('chamou ' + call.method);
+      print('chamou ${call.method}');
       if (call.method == 'refreshData') {
         _fetchInitialData();
       }
