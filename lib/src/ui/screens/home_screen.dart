@@ -1,51 +1,15 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:new_bible_verse/src/domain/models/bible_verse_model.dart';
 
-class HomeScreen extends StatefulWidget {
-  final ValueNotifier<List<BibleVerseModel>> bibleVerseModels;
+class HomeScreen extends StatelessWidget {
+  final BibleVerseModel? verse;
+  final VoidCallback onUpdateVerse;
 
-  const HomeScreen({required this.bibleVerseModels, super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  BibleVerseModel? verse;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadInitialVerse();
-  }
-
-  void _loadInitialVerse() {
-    if (widget.bibleVerseModels.value.isNotEmpty) {
-      setState(() {
-        verse = widget.bibleVerseModels
-            .value[Random().nextInt(widget.bibleVerseModels.value.length)];
-      });
-    }
-  }
-
-  void _getNewVerse() {
-    final oldVerse = verse;
-    BibleVerseModel? newVerse;
-
-    if (widget.bibleVerseModels.value.isNotEmpty) {
-      do {
-        newVerse = widget.bibleVerseModels
-            .value[Random().nextInt(widget.bibleVerseModels.value.length)];
-      } while (newVerse == oldVerse);
-    }
-
-    if (newVerse != null) {
-      setState(() {
-        verse = newVerse;
-      });
-    }
-  }
+  const HomeScreen({
+    required this.verse,
+    required this.onUpdateVerse,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 32),
                       ElevatedButton(
-                        onPressed: _getNewVerse,
+                        onPressed: onUpdateVerse,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.brown[300],
                           shape: RoundedRectangleBorder(

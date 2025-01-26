@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:new_bible_verse/src/domain/models/bible_verse_model.dart';
 import 'package:new_bible_verse/src/domain/services/verse_service.dart';
@@ -21,6 +23,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final ValueNotifier<List<BibleVerseModel>> bibleVerseModels =
       ValueNotifier<List<BibleVerseModel>>([]);
+  final ValueNotifier<BibleVerseModel?> currentVerse =
+      ValueNotifier<BibleVerseModel?>(null);
 
   final VerseService _verseService = VerseService();
 
@@ -43,6 +47,17 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     ];
+
+    if (bibleVerseModels.value.isNotEmpty) {
+      _updateCurrentVerse();
+    }
+  }
+
+  void _updateCurrentVerse() {
+    if (bibleVerseModels.value.isNotEmpty) {
+      currentVerse.value = bibleVerseModels
+          .value[Random().nextInt(bibleVerseModels.value.length)];
+    }
   }
 
   Future<void> _fetchMoreData() async {
@@ -71,7 +86,9 @@ class _MyAppState extends State<MyApp> {
           darkTheme: theme.dark(),
           home: HomePage(
             bibleVerseModels: bibleVerseModels,
+            currentVerse: currentVerse,
             fetchMoreData: _fetchMoreData,
+            updateVerse: _updateCurrentVerse,
           ),
         );
       },
@@ -81,12 +98,16 @@ class _MyAppState extends State<MyApp> {
 
 class HomePage extends StatefulWidget {
   final ValueNotifier<List<BibleVerseModel>> bibleVerseModels;
+  final ValueNotifier<BibleVerseModel?> currentVerse;
   final Future<void> Function() fetchMoreData;
+  final VoidCallback updateVerse;
 
   const HomePage({
     super.key,
     required this.bibleVerseModels,
+    required this.currentVerse,
     required this.fetchMoreData,
+    required this.updateVerse,
   });
 
   @override
@@ -99,13 +120,20 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
-      HomeScreen(bibleVerseModels: widget.bibleVerseModels),
+      ValueListenableBuilder<BibleVerseModel?>(
+        valueListenable: widget.currentVerse,
+        builder: (context, currentVerse, _) {
+          return HomeScreen(
+            verse: currentVerse,
+            onUpdateVerse: widget.updateVerse,
+          );
+        },
+      ),
       VersesScreen(
         bibleVerseModels: widget.bibleVerseModels,
         fetchMoreData: widget.fetchMoreData,
       ),
     ];
-
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
