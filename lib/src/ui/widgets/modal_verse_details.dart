@@ -58,34 +58,34 @@ class ModalVerseDetails extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Align(
-            alignment: Alignment.center,
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.brown[800],
-                backgroundColor: Colors.brown[300],
-                side: BorderSide(color: Colors.brown[800]!),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 24,
-                ),
-              ),
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-              child: const Text(
-                'Definir como versículo do dia',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.center,
+          //   child: OutlinedButton(
+          //     style: OutlinedButton.styleFrom(
+          //       foregroundColor: Colors.brown[800],
+          //       backgroundColor: Colors.brown[300],
+          //       side: BorderSide(color: Colors.brown[800]!),
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(8),
+          //       ),
+          //       padding: const EdgeInsets.symmetric(
+          //         vertical: 14,
+          //         horizontal: 24,
+          //       ),
+          //     ),
+          //     onPressed: () {
+          //       Navigator.pop(context, true);
+          //     },
+          //     child: const Text(
+          //       'Definir como versículo do dia',
+          //       style: TextStyle(
+          //         fontSize: 16,
+          //         fontWeight: FontWeight.bold,
+          //         color: Colors.white,
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
