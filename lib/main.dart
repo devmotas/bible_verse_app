@@ -19,39 +19,44 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final List<BibleVerseModel> _bibleVerseModels = [];
-
-  final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<List<BibleVerseModel>> bibleVerseModels =
+      ValueNotifier<List<BibleVerseModel>>([]);
 
   final VerseService _verseService = VerseService();
 
+  @override
   void initState() {
     super.initState();
     _fetchInitialData();
-
-    _scrollController.addListener(() async {
-      if (_scrollController.position.pixels + 200 >=
-              _scrollController.position.maxScrollExtent &&
-          _bibleVerseModels.length < 100) {
-        // await _fetchMoreData();
-      }
-    });
   }
 
   Future<void> _fetchInitialData() async {
-    final bibleVerseModels = await _verseService.getVersesData(context);
-    setState(() {
-      _bibleVerseModels.addAll(
-        bibleVerseModels.where(
-          (verse) => !_bibleVerseModels.any(
-            (existingVerse) =>
-                verse.chapter != null &&
-                existingVerse.chapter == verse.chapter &&
-                existingVerse.number == verse.number,
-          ),
+    final newVerses = await _verseService.getVersesData(context);
+    bibleVerseModels.value = [
+      ...bibleVerseModels.value,
+      ...newVerses.where(
+        (verse) => !bibleVerseModels.value.any(
+          (existingVerse) =>
+              verse.chapter != null &&
+              existingVerse.chapter == verse.chapter &&
+              existingVerse.number == verse.number,
         ),
-      );
-    });
+      ),
+    ];
+  }
+
+  Future<void> _fetchMoreData() async {
+    final newVerses = await _verseService.getMoreVersesData(context);
+    bibleVerseModels.value = [
+      ...bibleVerseModels.value,
+      ...newVerses.where(
+        (verse) => !bibleVerseModels.value.any(
+          (existingVerse) =>
+              existingVerse.chapter == verse.chapter &&
+              existingVerse.number == verse.number,
+        ),
+      ),
+    ];
   }
 
   @override
@@ -64,7 +69,10 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           theme: theme.light(),
           darkTheme: theme.dark(),
-          home: const HomePage(),
+          home: HomePage(
+            bibleVerseModels: bibleVerseModels,
+            fetchMoreData: _fetchMoreData,
+          ),
         );
       },
     );
@@ -72,7 +80,14 @@ class _MyAppState extends State<MyApp> {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final ValueNotifier<List<BibleVerseModel>> bibleVerseModels;
+  final Future<void> Function() fetchMoreData;
+
+  const HomePage({
+    super.key,
+    required this.bibleVerseModels,
+    required this.fetchMoreData,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -81,29 +96,69 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
 
-  // Suas telas
-  final List<Widget> screens = [
-    const HomeScreen(),
-    const VersesScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final List<Widget> screens = [
+      HomeScreen(bibleVerseModels: widget.bibleVerseModels),
+      VersesScreen(
+        bibleVerseModels: widget.bibleVerseModels,
+        fetchMoreData: widget.fetchMoreData,
+      ),
+    ];
+
     return Scaffold(
-      body: screens[currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (value) => setState(() => currentIndex = value),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFEEE9DA),
+              Color(0xFFD8C9A2),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Versos',
+        ),
+        child: screens[currentIndex],
+      ),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFD8C9A2),
+              Color(0xFFEEE9DA),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-        ],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 8,
+              offset: Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: currentIndex,
+          onTap: (value) => setState(() => currentIndex = value),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          selectedItemColor: Colors.brown[800],
+          unselectedItemColor: Colors.brown[400],
+          selectedFontSize: 14,
+          unselectedFontSize: 12,
+          showUnselectedLabels: true,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu_book),
+              label: 'Versos',
+            ),
+          ],
+        ),
       ),
     );
   }
