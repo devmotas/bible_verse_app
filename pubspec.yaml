@@ -20,6 +20,21 @@ dependencies:
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.4
 
+
+flutter_native_splash:
+  color: "#333434"
+  image: "assets/app/splash.png"
+  android: true
+  ios: true
+
+flutter_icons:
+  image_path: "assets/app/playstore.png"
+  ios: true
+  remove_alpha_ios: true
+  android: launcher_icon
+  adaptive_icon_background: "#EEE9DA"
+  adaptive_icon_foreground: "assets/app/playstore.png"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
